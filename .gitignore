@@ -1,7 +1,15 @@
+# Python / tooling
 .venv/
 __pycache__/
 .pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local data and secrets: never commit
 *.db
 .env
 .streamlit/secrets.toml
 .claude/settings.local.json
+
+.DS_Store

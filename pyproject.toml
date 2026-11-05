@@ -1,7 +1,7 @@
 [project]
 name = "health-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "Healthcare scheduling assistant: Streamlit UI + LLM (Fireworks) with tool calling"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -15,5 +15,26 @@ dev = [
     "pre-commit>=4.7.0",
     "pyright>=1.1.414",
     "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
     "ruff>=0.17.3",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+markers = ["live: calls the real LLM API (needs an API key); run with -m live"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.pyright]
+include = ["."]
+pythonVersion = "3.13"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"

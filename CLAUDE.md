@@ -1,37 +1,40 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repository.
 
-## Project status
+## Status
 
-This repo is a fresh `uv` scaffold — no commits yet, empty README, and `main.py` is still the generated
-hello-world. There is no application architecture to preserve, so treat early structural decisions as open.
-Keep this file updated as real modules land.
+Empty skeleton: the files below exist but contain no code yet.
 
-What the scaffold's config already commits to:
+## Layout
 
-- **Python 3.13**, managed by `uv` (`uv.lock` is checked in — use `uv` commands, not bare `pip`/`python`).
-- **LLM access via the `openai` SDK pointed at Fireworks**, not OpenAI: the only secret in `.env.example` is
-  `FIREWORKS_API_KEY`. New code should construct the OpenAI client with Fireworks' `base_url`
-  (`https://api.fireworks.ai/inference/v1`) and read the key through `pydantic-settings`, not `os.environ`
-  directly.
-- **Streamlit** as the UI layer, with `.streamlit/secrets.toml` gitignored.
-- **SQLite** for persistence — `*.db` is gitignored, so schema must be creatable from code (migration/init
-  routine), never restored from a committed file.
+- `app.py`: Streamlit chat UI
+- `agent.py`: LLM loop (send messages, run tool calls, repeat until a text answer)
+- `prompts.py`: system prompt
+- `tools.py`: tool schemas + handlers
+- `rules.py`: business rules (pure functions, no I/O)
+- `db.py`: SQLite setup + seed data
+- `tests/`: pytest; `conftest.py` holds shared fixtures
+
+## Stack
+
+- Python 3.13 with `uv` (`uv.lock` committed). Use `uv` / `make`, never bare `pip`.
+- LLM through the `openai` SDK pointed at Fireworks: base URL `https://api.fireworks.ai/inference/v1`,
+  key `FIREWORKS_API_KEY`, model `LLM_MODEL` (see `.env.example`). Read settings with `pydantic-settings`.
+- Streamlit for the UI; SQLite for storage (`*.db` is git-ignored, so create the schema from code).
 
 ## Commands
 
 ```bash
-uv sync                      # install/refresh env from uv.lock (incl. dev group)
-uv run streamlit run main.py # run the app once a Streamlit entrypoint exists
-uv run python main.py        # run the plain CLI entrypoint
-
-uv run pytest                        # all tests
-uv run pytest path/to/test_x.py::test_name  # single test
-uv run ruff check . && uv run ruff format .  # lint + format
-uv run pyright                       # type check
-uv add <pkg> / uv add --dev <pkg>    # add a dependency (updates pyproject + lock)
+make setup     # uv sync + pre-commit hooks
+make run       # streamlit run app.py
+make test      # pytest (excludes tests marked @pytest.mark.live)
+make check     # ruff + pyright + pytest, same as CI
+uv add <pkg>   # add a dependency
 ```
 
-`pre-commit` is a dev dependency but no `.pre-commit-config.yaml` exists yet; if you add hooks, mirror the
-ruff/pyright/pytest commands above and run `uv run pre-commit install`.
+## Conventions
+
+- Secrets only in `.env` / `.streamlit/secrets.toml` (git-ignored); pre-commit runs gitleaks.
+- Business and safety rules live in code (`rules.py`, `tools.py`), not only in the prompt.
+- Build file paths from the project folder, not the current working directory.
