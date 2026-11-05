@@ -14,6 +14,7 @@ make run                 # http://localhost:8501
 | File | Purpose |
 |---|---|
 | `app.py` | Streamlit chat UI |
+| `config.py` | Settings from env / `.env` |
 | `agent.py` | LLM loop |
 | `prompts.py` | System prompt |
 | `tools.py` | Tool schemas + handlers |

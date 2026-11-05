@@ -4,11 +4,12 @@ Guidance for Claude Code when working in this repository.
 
 ## Status
 
-Empty skeleton: the files below exist but contain no code yet.
+Skeleton: `config.py` and a smoke test exist; the other files are mostly empty.
 
 ## Layout
 
 - `app.py`: Streamlit chat UI
+- `config.py`: settings (`get_settings()`), loaded from env / `.env`
 - `agent.py`: LLM loop (send messages, run tool calls, repeat until a text answer)
 - `prompts.py`: system prompt
 - `tools.py`: tool schemas + handlers

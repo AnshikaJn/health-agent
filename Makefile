@@ -2,10 +2,10 @@
 setup:   ## install deps + git hooks
 	uv sync
 	uv run pre-commit install
-test:    ## fast tests (no live API calls); exit code 5 = "no tests yet", treated as OK
-	uv run pytest -m "not live" || [ $$? -eq 5 ]
+test:    ## fast tests (no live API calls)
+	uv run pytest -m "not live"
 cov:     ## tests with coverage report
-	uv run pytest -m "not live" --cov=. --cov-report=term-missing || [ $$? -eq 5 ]
+	uv run pytest -m "not live" --cov=. --cov-report=term-missing
 lint:
 	uv run ruff check .
 fmt:
@@ -14,7 +14,7 @@ fmt:
 types:
 	uv run pyright
 check: lint types test   ## everything CI runs
-run:     ## loads .env into the environment
-	uv run --env-file .env streamlit run app.py
+run:     ## settings are read from .env by config.py
+	uv run streamlit run app.py
 clean:
 	rm -rf .pytest_cache .ruff_cache htmlcov .coverage
